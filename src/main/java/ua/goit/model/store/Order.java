@@ -1,10 +1,12 @@
 package ua.goit.model.store;
 
+import java.util.Date;
+
 public class Order {
     private Long id;
     private Long petId;
     private Long quantity;
-    private String shipDate;
+    private Date shipDate;
     private String status;
     private boolean complete;
 
@@ -32,11 +34,11 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public String getShipDate() {
+    public Date getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(String shipDate) {
+    public void setShipDate(Date shipDate) {
         this.shipDate = shipDate;
     }
 

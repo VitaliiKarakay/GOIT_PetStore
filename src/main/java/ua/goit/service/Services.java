@@ -140,8 +140,8 @@ public class Services {
         order.setPetId(scanner.nextLong());
         printRegularMessage("Enter quantity");
         order.setQuantity(scanner.nextLong());
-        printRegularMessage("Enter ship date");
-        order.setShipDate(scanner.next());
+        Date date = new Date(System.currentTimeMillis());
+        order.setShipDate(date);
         printRegularMessage("Enter status");
         order.setStatus(scanner.next());
         order.setComplete(false);
