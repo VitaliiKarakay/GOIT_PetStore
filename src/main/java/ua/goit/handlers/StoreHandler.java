@@ -3,6 +3,7 @@ package ua.goit.handlers;
 import ua.goit.model.store.Order;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
 
 public class StoreHandler extends AbstractHandler{
     @Override
@@ -20,15 +21,18 @@ public class StoreHandler extends AbstractHandler{
                 getOrder();
                 break;
             case "inventory":
-                getInventory();
+                getInventory(answer);
                 break;
             default:
                 services.printRegularMessage("Enter order or inventory");
         }
     }
 
-    private void getInventory() {
-
+    private void getInventory(String answer) {
+        String params = "";
+        HttpResponse httpResponse = httpActions.get(getTemplateName(), params, answer);
+        Map inventory = services.collectInventory(httpResponse);
+        services.printRegularMessage(inventory.entrySet().toString());
     }
 
     private void getOrder() {
@@ -43,11 +47,12 @@ public class StoreHandler extends AbstractHandler{
 
     @Override
     protected void post() {
-
+        services.createOrder(scanner, getTemplateName());
+        httpActions.post(getTemplateName());
     }
 
     @Override
     protected void put() {
-
+        services.printErrorMessage("Not implemented");
     }
 }

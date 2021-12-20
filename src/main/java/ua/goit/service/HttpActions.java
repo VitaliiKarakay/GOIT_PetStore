@@ -16,7 +16,9 @@ public class HttpActions {
     public void delete (String answer, String handlerName) {
 
         String url = "https://petstore.swagger.io/v2/%s/%s";
-
+        if (handlerName.equals("store")) {
+            answer = "order/" + answer;
+        }
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format(url, handlerName, answer)))
                 .DELETE()
@@ -30,7 +32,6 @@ public class HttpActions {
         if (response != null) {
             services.printRegularMessage("Answer" + response.statusCode());
         }
-        else System.out.println("Дичь");
     }
 
     public HttpResponse get(String templateName, String params, String statusOrId){
@@ -56,13 +57,16 @@ public class HttpActions {
 
     public HttpResponse post(String templateName) {
         String url = "https://petstore.swagger.io/v2/%s";
+        if (templateName.equals("store")) {
+            url+="/order";
+        }
         HttpRequest request = null;
         HttpResponse httpResponse = null;
         try {
             request = HttpRequest.newBuilder()
                     .uri(URI.create(String.format(url, templateName)))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofFile(Path.of("pet.json")))
+                    .POST(HttpRequest.BodyPublishers.ofFile(Path.of(templateName + ".json")))
                     .build();
         } catch (FileNotFoundException e) {
             services.printErrorMessage("File not found");
@@ -72,7 +76,7 @@ public class HttpActions {
         } catch (IOException | InterruptedException e) {
             services.printErrorMessage("Try again");
         }
-        if (httpResponse.statusCode() == 200) {
+        if (httpResponse != null && httpResponse.statusCode() == 200) {
             services.printRegularMessage("Done");
         }
         return httpResponse;

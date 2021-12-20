@@ -25,10 +25,14 @@ public class PetHandler extends AbstractHandler{
         String answer = scanner.next().toLowerCase().trim();
         switch (answer) {
             case "id":
-                getById();
+                services.printRegularMessage("Enter " + getTemplateName() + " id");
+                Long id = scanner.nextLong();
+                get(id);
                 break;
             case "status":
-                getByStatus();
+                services.printRegularMessage("Available statuses: " + Services.statusList);
+                String status = scanner.next().trim();
+                get(status);
                 break;
             default:
                 services.printErrorMessage("Enter id or status");
@@ -36,10 +40,9 @@ public class PetHandler extends AbstractHandler{
         }
     }
 
-    private void getByStatus() {
+    private void get(String status) {
         String params = "findByStatus?status=";
         services.printRegularMessage("Available statuses: " + Services.statusList);
-        String status = scanner.next().trim();
         if (!Services.statusList.contains(status)) {
             services.printErrorMessage("Print correct status");
         }
@@ -50,11 +53,9 @@ public class PetHandler extends AbstractHandler{
         }
     }
 
-    private void getById() {
+    private void get(Long id) {
         String params = "";
-        services.printRegularMessage("Print " + getTemplateName() + " id");
-        String id = scanner.next().trim();
-        HttpResponse response = httpActions.get(getTemplateName(),params, id);
+        HttpResponse response = httpActions.get(getTemplateName(),params, id.toString());
         Pet pet = services.collectPet(response);
         services.printRegularMessage(pet.toString());
     }
@@ -82,7 +83,7 @@ public class PetHandler extends AbstractHandler{
     }
 
     private void createNewPet() {
-        services.createPet(scanner);
+        services.createPet(scanner, getTemplateName());
         httpActions.post(getTemplateName());
     }
 

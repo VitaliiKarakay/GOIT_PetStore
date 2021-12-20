@@ -1,6 +1,6 @@
 package ua.goit.model.store;
 
-public class Store {
+public class Inventory {
 
     private String statusCode;
     private Long quantity;

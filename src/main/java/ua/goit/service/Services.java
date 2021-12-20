@@ -10,6 +10,7 @@ import ua.goit.model.pet.Pet;
 import ua.goit.model.pet.Pets;
 import ua.goit.model.pet.Tag;
 import ua.goit.model.store.Order;
+import ua.goit.model.user.User;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -46,7 +47,7 @@ public class Services {
         printRegularMessage("Choose the request\n" + requestList + "\nTo exit enter: exit");
         String inputRequest = scanner.nextLine().toLowerCase();
             if (!requestList.contains(inputRequest)) {
-                printErrorMessage("Invelid request. Try again");
+                printErrorMessage("Invalid request. Try again");
             }
 
             commandMap.get(inputEntity).handle(inputRequest);
@@ -69,15 +70,20 @@ public class Services {
         return gson.fromJson(String.valueOf(response.body()), Pets.class);
     }
 
-    public Map collectStore(HttpResponse response) {
-        return gson.fromJson(String.valueOf(response), Map.class);
+    public Map collectInventory(HttpResponse response) {
+        return gson.fromJson(String.valueOf(response.body()), Map.class);
     }
 
     public Order collectOrder (HttpResponse response) {
-        return gson.fromJson(String.valueOf(response), Order.class);
+        return gson.fromJson(String.valueOf(response.body()), Order.class);
     }
 
-    public void createPet (Scanner scanner) {
+    public User collectUser(HttpResponse response){
+        User user = gson.fromJson(String.valueOf(response.body()), User.class);
+        return user;
+    }
+
+    public void createPet (Scanner scanner, String templateName) {
         Pet pet = new Pet();
         printRegularMessage("Enter pets ID");
         pet.setId(scanner.nextLong());
@@ -106,23 +112,7 @@ public class Services {
         printRegularMessage("Enter path to photo's URL");
         urls.add(scanner.next());
         pet.setProtoUrls(urls);
-
-        File file = new File ("pet.json");
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            System.out.println("File wasn't created");;
-        }
-        FileWriter fileWriter;
-        try {
-            fileWriter = new FileWriter(file);
-            fileWriter.write(gson.toJson(pet));
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            System.out.println("File wasn't created");;
-        }
-
+        createFile(pet, templateName);
     }
 
     private void createTags(Scanner scanner, List<Tag> tags) {
@@ -132,7 +122,7 @@ public class Services {
         tags.add(tag);
     }
 
-    public void createOrder(Scanner scanner) {
+    public void createOrder(Scanner scanner, String templateName) {
         Order order = new Order();
         printRegularMessage("Enter order's ID");
         order.setId(scanner.nextLong());
@@ -145,8 +135,11 @@ public class Services {
         printRegularMessage("Enter status");
         order.setStatus(scanner.next());
         order.setComplete(false);
+        createFile(order, templateName);
+    }
 
-        File file = new File ("order.json");
+    public void createFile(Object object, String templateName) {
+        File file = new File (templateName + ".json");
         try {
             file.createNewFile();
         } catch (IOException e) {
@@ -155,12 +148,33 @@ public class Services {
         FileWriter fileWriter;
         try {
             fileWriter = new FileWriter(file);
-            fileWriter.write(gson.toJson(order));
+            fileWriter.write(gson.toJson(object));
             fileWriter.flush();
             fileWriter.close();
         } catch (IOException e) {
             System.out.println("File wasn't created");;
         }
+    }
+
+    public void createUser(Scanner scanner, String templateName) {
+        User user = new User();
+        printRegularMessage("Enter user's ID");
+        user.setId(scanner.nextLong());
+        printRegularMessage("Enter user's username");
+        user.setUsername(scanner.next());
+        printRegularMessage("Enter user's first name");
+        user.setFirstName(scanner.next());
+        printRegularMessage("Enter user's lastname");
+        user.setLastName(scanner.next());
+        printRegularMessage("Enter user's email");
+        user.setEmail(scanner.next());
+        printRegularMessage("Enter user's password");
+        user.setPassword(scanner.next());
+        printRegularMessage("Enter user's phone");
+        user.setPhone(scanner.next());
+        printRegularMessage("Enter user's status");
+        user.setUserStatus(scanner.nextLong());
+        createFile(user, templateName);
     }
 
 }
