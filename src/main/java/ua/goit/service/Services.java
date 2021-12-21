@@ -79,11 +79,10 @@ public class Services {
     }
 
     public User collectUser(HttpResponse response){
-        User user = gson.fromJson(String.valueOf(response.body()), User.class);
-        return user;
+        return gson.fromJson(String.valueOf(response.body()), User.class);
     }
 
-    public void createPet (Scanner scanner, String templateName) {
+    public Pet createPet (Scanner scanner, String templateName) {
         Pet pet = new Pet();
         printRegularMessage("Enter pets ID");
         pet.setId(scanner.nextLong());
@@ -113,6 +112,7 @@ public class Services {
         urls.add(scanner.next());
         pet.setProtoUrls(urls);
         createFile(pet, templateName);
+        return pet;
     }
 
     private void createTags(Scanner scanner, List<Tag> tags) {
@@ -143,7 +143,7 @@ public class Services {
         try {
             file.createNewFile();
         } catch (IOException e) {
-            System.out.println("File wasn't created");;
+            System.out.println("File wasn't created");
         }
         FileWriter fileWriter;
         try {
@@ -152,11 +152,11 @@ public class Services {
             fileWriter.flush();
             fileWriter.close();
         } catch (IOException e) {
-            System.out.println("File wasn't created");;
+            System.out.println("File wasn't created");
         }
     }
 
-    public void createUser(Scanner scanner, String templateName) {
+    public User createUser(Scanner scanner, String templateName) {
         User user = new User();
         printRegularMessage("Enter user's ID");
         user.setId(scanner.nextLong());
@@ -172,9 +172,12 @@ public class Services {
         user.setPassword(scanner.next());
         printRegularMessage("Enter user's phone");
         user.setPhone(scanner.next());
-        printRegularMessage("Enter user's status");
+        printRegularMessage("Enter user's status (Long)");
         user.setUserStatus(scanner.nextLong());
         createFile(user, templateName);
+        return user;
     }
+
+
 
 }

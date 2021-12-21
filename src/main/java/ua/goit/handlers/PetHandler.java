@@ -1,6 +1,5 @@
 package ua.goit.handlers;
 
-import com.google.gson.Gson;
 import ua.goit.model.pet.Pet;
 import ua.goit.model.pet.Pets;
 import ua.goit.service.Services;
@@ -9,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PetHandler extends AbstractHandler{
 
@@ -53,11 +54,12 @@ public class PetHandler extends AbstractHandler{
         }
     }
 
-    private void get(Long id) {
+    private Pet get(Long id) {
         String params = "";
         HttpResponse response = httpActions.get(getTemplateName(),params, id.toString());
         Pet pet = services.collectPet(response);
         services.printRegularMessage(pet.toString());
+        return pet;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class PetHandler extends AbstractHandler{
         String input = scanner.next().trim().toLowerCase();
         switch (input) {
             case "new":
-                createNewPet();
+                addNewPet();
                 break;
             case "image":
                 uploadImage();
@@ -82,13 +84,21 @@ public class PetHandler extends AbstractHandler{
         }
     }
 
-    private void createNewPet() {
+    private void addNewPet() {
         services.createPet(scanner, getTemplateName());
         httpActions.post(getTemplateName());
     }
 
     private void uploadImage() {
+        services.printRegularMessage("Enter pet's ID");
+        String params = scanner.next() + "/uploadImage";
+        services.printRegularMessage("Enter image name");
+        String name = scanner.next();
 
+        Map<Object, Object> data = new HashMap<>();
+        data.put("additionalMetadata", "id");
+        data.put("file", name);
+        httpActions.postImage(params, data);
     }
 
     private void updatePet() {
@@ -126,7 +136,13 @@ public class PetHandler extends AbstractHandler{
 
     @Override
     protected void put() {
-
+        services.printRegularMessage("Enter pet's ID for update");
+        Long id = scanner.nextLong();
+        Pet pet = get(id);
+        Pet pet2 = services.createPet(scanner, getTemplateName());
+        pet2.setId(pet.getId());
+        services.createFile(pet2, getTemplateName());
+        httpActions.put(getTemplateName());
     }
 
 

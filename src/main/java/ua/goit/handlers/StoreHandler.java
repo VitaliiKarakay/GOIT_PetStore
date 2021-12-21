@@ -48,7 +48,7 @@ public class StoreHandler extends AbstractHandler{
     @Override
     protected void post() {
         services.createOrder(scanner, getTemplateName());
-        httpActions.post(getTemplateName());
+        httpActions.post(getTemplateName(), "/order");
     }
 
     @Override
