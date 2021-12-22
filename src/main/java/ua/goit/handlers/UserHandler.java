@@ -1,5 +1,6 @@
 package ua.goit.handlers;
 
+import ua.goit.model.ApiResponse;
 import ua.goit.model.user.User;
 
 import java.net.http.HttpResponse;
@@ -46,6 +47,8 @@ public class UserHandler extends AbstractHandler{
         else {
             services.printRegularMessage(String.valueOf(httpResponse.statusCode()));
         }
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 
     private void login() {
@@ -59,13 +62,19 @@ public class UserHandler extends AbstractHandler{
         else {
             services.printRegularMessage(String.valueOf(httpResponse.statusCode()));
         }
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 
     private User get(String username) {
         String params = "";
         HttpResponse httpResponse = httpActions.get(getTemplateName(), params, username);
         User user = services.collectUser(httpResponse);
-        services.printRegularMessage(user.toString());
+        if (httpResponse.statusCode() == 200) {
+            services.printRegularMessage(user.toString());
+        }
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
         return user;
     }
 
@@ -88,7 +97,9 @@ public class UserHandler extends AbstractHandler{
 
     private void createUser() {
         services.createUser(scanner, getTemplateName());
-        httpActions.post(getTemplateName());
+        HttpResponse httpResponse = httpActions.post(getTemplateName());
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 
     private void createUsers(String answer) {
@@ -109,7 +120,9 @@ public class UserHandler extends AbstractHandler{
             users.add(user);
         }
         services.createFile(users, getTemplateName());
-        httpActions.post(getTemplateName(), params);
+        HttpResponse httpResponse = httpActions.post(getTemplateName(), params);
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 
     @Override
@@ -120,7 +133,8 @@ public class UserHandler extends AbstractHandler{
         User user2 = services.createUser(scanner, getTemplateName());
         user2.setUsername(user.getUsername());
         services.createFile(user2, getTemplateName());
-        httpActions.put(getTemplateName(), params);
-
+        HttpResponse httpResponse = httpActions.put(getTemplateName(), params);
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 }

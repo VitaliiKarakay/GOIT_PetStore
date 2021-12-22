@@ -5,6 +5,7 @@ import ua.goit.handlers.AbstractHandler;
 import ua.goit.handlers.PetHandler;
 import ua.goit.handlers.StoreHandler;
 import ua.goit.handlers.UserHandler;
+import ua.goit.model.ApiResponse;
 import ua.goit.model.pet.Category;
 import ua.goit.model.pet.Pet;
 import ua.goit.model.pet.Pets;
@@ -82,6 +83,10 @@ public class Services {
         return gson.fromJson(String.valueOf(response.body()), User.class);
     }
 
+    public ApiResponse collectApiResponse (HttpResponse httpResponse) {
+        return  gson.fromJson(String.valueOf(httpResponse.body()), ApiResponse.class);
+    }
+
     public Pet createPet (Scanner scanner, String templateName) {
         Pet pet = new Pet();
         printRegularMessage("Enter pets ID");
@@ -130,8 +135,8 @@ public class Services {
         order.setPetId(scanner.nextLong());
         printRegularMessage("Enter quantity");
         order.setQuantity(scanner.nextLong());
-        Date date = new Date(System.currentTimeMillis());
-        order.setShipDate(date);
+        printRegularMessage("Enter ship date");
+        order.setShipDate(scanner.next());
         printRegularMessage("Enter status");
         order.setStatus(scanner.next());
         order.setComplete(false);

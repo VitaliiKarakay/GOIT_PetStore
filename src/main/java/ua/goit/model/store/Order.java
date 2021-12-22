@@ -6,7 +6,7 @@ public class Order {
     private Long id;
     private Long petId;
     private Long quantity;
-    private Date shipDate;
+    private String shipDate;
     private String status;
     private boolean complete;
 
@@ -34,11 +34,11 @@ public class Order {
         this.quantity = quantity;
     }
 
-    public Date getShipDate() {
+    public String getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(Date shipDate) {
+    public void setShipDate(String shipDate) {
         this.shipDate = shipDate;
     }
 

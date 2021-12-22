@@ -21,7 +21,7 @@ public class HttpActions {
     Services services = new Services();
     Gson gson = new Gson();
 
-    public void delete (String answer, String handlerName) {
+    public HttpResponse delete (String answer, String handlerName) {
 
         String url = "https://petstore.swagger.io/v2/%s/%s";
         if (handlerName.equals("store")) {
@@ -31,15 +31,16 @@ public class HttpActions {
                 .uri(URI.create(String.format(url, handlerName, answer)))
                 .DELETE()
                 .build();
-        HttpResponse response = null;
+        HttpResponse httpResponse = null;
         try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
            services.printErrorMessage("Try again");
         }
-        if (response != null) {
-            services.printRegularMessage("Answer" + response.statusCode());
+        if (httpResponse != null) {
+            services.printRegularMessage("Answer" + httpResponse.statusCode());
         }
+        return httpResponse;
     }
 
     public HttpResponse get(String templateName, String params, String statusOrId){

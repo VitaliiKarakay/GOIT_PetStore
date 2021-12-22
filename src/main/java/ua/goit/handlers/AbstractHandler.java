@@ -2,9 +2,11 @@ package ua.goit.handlers;
 
 
 import com.google.gson.Gson;
+import ua.goit.model.ApiResponse;
 import ua.goit.service.HttpActions;
 import ua.goit.service.Services;
 
+import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public abstract class AbstractHandler {
@@ -43,7 +45,8 @@ public abstract class AbstractHandler {
     private void delete() {
         System.out.println("Enter " + getTemplateName() + " id");
         String answer = scanner.next().trim();
-
-        httpActions.delete(answer, getTemplateName());
+        HttpResponse httpResponse = httpActions.delete(answer, getTemplateName());
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 }

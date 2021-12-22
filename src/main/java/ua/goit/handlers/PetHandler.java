@@ -1,5 +1,6 @@
 package ua.goit.handlers;
 
+import ua.goit.model.ApiResponse;
 import ua.goit.model.pet.Pet;
 import ua.goit.model.pet.Pets;
 import ua.goit.service.Services;
@@ -8,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,9 +98,12 @@ public class PetHandler extends AbstractHandler{
         String name = scanner.next();
 
         Map<Object, Object> data = new HashMap<>();
-        data.put("additionalMetadata", "id");
-        data.put("file", name);
-        httpActions.postImage(params, data);
+        data.put("additionalMetadata", "MyPet");
+        data.put("file", Paths.get(name));
+        HttpResponse httpResponse = httpActions.postImage(params, data);
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
+
     }
 
     private void updatePet() {
@@ -132,6 +137,8 @@ public class PetHandler extends AbstractHandler{
         else {
             services.printRegularMessage("Pet does not exist");
         }
+        ApiResponse apiResponse = services.collectApiResponse(httpResponse);
+        services.printRegularMessage(apiResponse.toString());
     }
 
     @Override
